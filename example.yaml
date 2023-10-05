@@ -1,0 +1,26 @@
+# Optional: enable development mode
+devMode: False
+
+netatmo:
+  # Name of the Netatmo home
+  homeName:
+  # Name of the Netatmo indoor module
+  indoorName:
+  # Name of the Netatmo outdoor module
+  outdoorName:
+  oauth:
+    # Netatmo OAuth client id
+    clientId:
+    # Netatmo OAuth client secret
+    clientSecret:
+    # Netatmo OAuth refresh token
+    refreshToken:
+
+
+owm:
+  # API Token for openweathermap
+  apiToken:
+  # openweathermap latitude
+  lat:
+  # openweathermap longitude
+  lon:
