@@ -52,7 +52,6 @@ class DisplayDrawer():
         self.font12 = ImageFont.truetype(self.font_path, 12)
         self.font18 = ImageFont.truetype(self.font_path, 18)
         self.font24 = ImageFont.truetype(self.font_path, 24)
-        font36 = ImageFont.truetype(self.font_path, 36)
         self.font48 = ImageFont.truetype(self.font_path, 48)
         self.font64 = ImageFont.truetype(self.font_path, 64)
         self.fa24 = ImageFont.truetype(self.fa_path, 24)
@@ -141,7 +140,7 @@ class DisplayDrawer():
         draw.text((260, 445), '%s %%' %
                   (outdoor_model.humidity), font=self.font48, fill=0)
 
-    def __draw_forecast(self, im, draw, forecast):
+    def __draw_forecast(self, draw, forecast):
         logger.debug("Drawing forecast")
 
         draw.line((10, 675, 470, 675), fill=0)
@@ -153,7 +152,7 @@ class DisplayDrawer():
                           font=self.font18, fill=0)
                 for hour_idx, hour in enumerate(day.hours):
                     draw.text((10 + hour_idx * 100, 560), "%s Uhr" %
-                              (hour.hour),
+                              hour.hour,
                               font=self.font12, fill=0)
                     draw.text((15 + hour_idx * 100, 575),
                               wi.icons[
@@ -161,7 +160,7 @@ class DisplayDrawer():
                                   + str(hour.weather_code)],
                               font=self.wi48, fill=0)
                     draw.text((30 + hour_idx * 100, 640), "%s °C" %
-                              (hour.temp),
+                              hour.temp,
                               font=self.font12, fill=0)
             
             # Draw Daily Forecast
@@ -181,9 +180,11 @@ class DisplayDrawer():
                    dt_model=DateTimeModel(),
                    indoor_model=NetatmoIndoorModel(),
                    outdoor_model=NetatmoOutdoorModel(),
-                   forecast=[]):
+                   forecast=None):
         """ This acutally draws the image """
 
+        if forecast is None:
+            forecast = []
         logger.debug("Drawing new image")
 
         with Image.new('1', (480, 800), 255) as im:
@@ -206,7 +207,7 @@ class DisplayDrawer():
 
             draw.line((10, 520, 470, 520), fill=0)
 
-            self.__draw_forecast(im, draw, forecast)
+            self.__draw_forecast(draw, forecast)
 
             # rotate image by 180 degrees
             return im.rotate(180)

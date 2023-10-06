@@ -1,15 +1,10 @@
 import logging
+import os
 import time
 import lnetatmo
 from drawing import DisplayDrawer, DateTimeModel, NetatmoIndoorModel, NetatmoOutdoorModel
-from PIL import Image
 from weather import Weather
 import yaml
-
-#
-# Remember to put credentials into ~/.netatmo.credentials
-#
-
 
 logging.basicConfig(
     format='%(asctime)s %(name)s: %(message)s', level=logging.DEBUG)
@@ -18,11 +13,13 @@ logger = logging.getLogger(__name__)
 #
 # READ SETTINGS BLOCK
 #
-with open('config.yaml', 'r') as file:
+parent_directory = os.path.dirname(os.path.abspath(os.path.join(__file__, '..')))
+file_path = os.path.join(parent_directory, 'config.yaml')
+with open(file_path, 'r') as file:
     config_file = yaml.safe_load(file)
 
 # Dev Mode
-dev_mode = config_file["devMode"]
+dev_mode = config_file.get("devMode", False)
 logger.debug("Dev Mode: %s" % dev_mode)
 
 # Netatmo
