@@ -24,12 +24,12 @@ Real life example:
 1. Checkout this repo
 2. Create Virtual env (see https://docs.python.org/3/library/venv.html)
 3. Install dependencies:
-   ```bash
+   ```shell
    $ pip install -r requirements-base.txt
    ```
 4. Copy `example.yaml` to `config.yaml` and update the file accordingly.
 5. Run the application:
-   ```bash
+   ```shell
    $ python netatmo-epaper/netatmo-epaper.py
    ```
 
@@ -37,22 +37,22 @@ Real life example:
 
 1. Checkout this repo
 2. Create and activate Virtual env (see https://docs.python.org/3/library/venv.html)
-   ```bash
+   ```shell
    $ cd netatmo-epaper
    $ python3 -m venv .venv
    $ source .venv/bin/activate
    ```
 3. Install dependencies:
-   ```bash
+   ```shell
    $ pip3 install -r requirements-base.txt -r requirements-pi.txt
    ```
 4. Copy `example.yaml` to `config.yaml` and update the file accordingly.
 5. Run the application:
-   ```bash
+   ```shell
    $ python3 netatmo-epaper/netatmo-epaper.py
    ```
 6. Optional: (re)start automatically, e.g. using pm2:
-   ```bash
+   ```shell
    $ pm2 start /home/pi/netatmo-epaper/netatmo-epaper/netatmo-epaper.py --name "netatmo-epaper.py" --interpreter "/home/pi/netatmo-epaper/.venv/bin/python"
    $ pm2 save
    ```
