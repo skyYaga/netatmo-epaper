@@ -6,16 +6,13 @@ currentdir = os.path.dirname(os.path.realpath(__file__))
 parentdir = os.path.dirname(currentdir)
 sys.path.append(parentdir)
 import logging
-import time
-import traceback
 import signal
-from PIL import Image, ImageDraw, ImageFont
 from libs.waveshare_epd import epd7in5_V2
 
 logger = logging.getLogger(__name__)
 
 
-class Epd():
+class Epd:
 
     def __init__(self):
         logging.debug("Init epd")
@@ -32,7 +29,6 @@ class Epd():
         try:
             logging.info("init and Clear")
             self.epd.init()
-            # self.epd.Clear()
 
             logging.debug("Getting buffer...")
             buffer = self.epd.getbuffer(image)
@@ -42,17 +38,11 @@ class Epd():
 
             logging.info("Goto Sleep...")
             self.epd.sleep()
-            # self.epd.Dev_exit()
 
-        except TimeoutError as te:
+        except TimeoutError:
             logging.error("Timeout Error!!!!!")
-            #logging.error("Exiting device")
-            #self.epd.Dev_exit()
-            #logging.error("Reinit device")
-            #self.epd = epd7in5_V2.EPD()
             logging.error("init")
             self.epd.init()
-            #self.epd.Clear()
             logging.error("Goto Sleep...")
             self.epd.sleep()
             logging.error("Goto Sleep complete...")
