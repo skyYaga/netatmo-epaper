@@ -26,16 +26,10 @@ logger.debug("Dev Mode: %s" % dev_mode)
 home_name = config_file["netatmo"]["homeName"]
 indoor_name = config_file["netatmo"]["indoorName"]
 outdoor_name = config_file["netatmo"]["outdoorName"]
-client_id = config_file["netatmo"]["oauth"]["clientId"]
-client_secret = config_file["netatmo"]["oauth"]["clientSecret"]
-refresh_token = config_file["netatmo"]["oauth"]["refreshToken"]
 
 logger.debug("Netatmo homeName: %s" % home_name)
 logger.debug("Netatmo indoorName: %s" % indoor_name)
 logger.debug("Netatmo outdoorName: %s" % outdoor_name)
-logger.debug("Netatmo clientId: %s" % client_id)
-logger.debug("Netatmo clientSecret: %s" % client_secret)
-logger.debug("Netatmo refreshToken: %s" % refresh_token)
 
 # OWM
 owm_api_token = config_file["owm"]["apiToken"]
@@ -108,7 +102,7 @@ if not dev_mode:
     epd = Epd()
 
 # Authenticate
-authorization = lnetatmo.ClientAuth(clientId=client_id, clientSecret=client_secret, refreshToken=refresh_token)
+authorization = lnetatmo.ClientAuth()
 
 while True:
     current_local_time = time.localtime()
