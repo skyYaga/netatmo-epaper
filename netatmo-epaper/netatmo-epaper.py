@@ -2,7 +2,7 @@ import logging
 import os
 import time
 import lnetatmo
-from drawing import DisplayDrawer, DateTimeModel, NetatmoIndoorModel, NetatmoOutdoorModel
+from drawing import DisplayDrawer, DateTimeModel, NetatmoIndoorModel, NetatmoOutdoorModel, NetatmoRainModel
 from weather import Weather
 import yaml
 
@@ -13,7 +13,8 @@ logger = logging.getLogger(__name__)
 #
 # READ SETTINGS BLOCK
 #
-parent_directory = os.path.dirname(os.path.abspath(os.path.join(__file__, '..')))
+parent_directory = os.path.dirname(
+    os.path.abspath(os.path.join(__file__, '..')))
 file_path = os.path.join(parent_directory, 'config.yaml')
 with open(file_path, 'r') as file:
     config_file = yaml.safe_load(file)
@@ -26,6 +27,7 @@ logger.debug("Dev Mode: %s" % dev_mode)
 home_name = config_file["netatmo"]["homeName"]
 indoor_name = config_file["netatmo"]["indoorName"]
 outdoor_name = config_file["netatmo"]["outdoorName"]
+rain_name = config_file["netatmo"]["rainGaugeName"]
 
 logger.debug("Netatmo homeName: %s" % home_name)
 logger.debug("Netatmo indoorName: %s" % indoor_name)
@@ -71,6 +73,14 @@ def log_outoor_info(data):
     logger.debug("Humidity: %s %%" % (data['Humidity']))
 
 
+def log_rain_info(data):
+    """ Print sensor data for rain gauge """
+    logger.debug("Current data (rain):")
+    logger.debug("Rain: %s mm" % (data.get('Rain', '')))
+    logger.debug("Sum Rain (1h/24h): %s mm / %s mm" %
+                 (data.get('sum_rain_1', ''), data.get('sum_rain_24', '')))
+
+
 def set_indoor_model(model, data):
     """ set sensor data for indoor module into model"""
 
@@ -88,6 +98,14 @@ def set_outdoor_model(model, data):
     model.humidity = data.get('Humidity', '')
 
 
+def set_rain_model(model, data):
+    """ set sensor data for rain gauge into model"""
+
+    model.rain = data.get('Rain', '')
+    model.sum_rain_1 = data.get('sum_rain_1', '')
+    model.sum_rain_24 = data.get('sum_rain_24', '')
+
+
 # Init variables
 current_time = ""
 current_hour = ""
@@ -95,6 +113,7 @@ drawer = DisplayDrawer()
 dt_model = DateTimeModel()
 indoor_model = NetatmoIndoorModel()
 outdoor_model = NetatmoOutdoorModel()
+rain_model = None
 weather = Weather(owm_api_token)
 forecast = []
 weather_data = ""
@@ -134,6 +153,12 @@ while True:
         set_outdoor_model(outdoor_model, outdoor_data)
         log_outoor_info(outdoor_data)
 
+        if rain_name: 
+            rain_model = NetatmoRainModel()
+            rain_data = weather_data.lastData()[rain_name]
+            set_rain_model(rain_model, rain_data)
+            log_rain_info(rain_data)
+
         # weather forecast
         if current_hour != time.strftime("%H", current_local_time):
             try:
@@ -145,7 +170,7 @@ while True:
                 logger.info("Continue with old data")
 
         img = drawer.draw_image(dt_model, indoor_model,
-                                outdoor_model, forecast)
+                                outdoor_model, rain_model, forecast)
 
         if dev_mode:
             # show image

@@ -8,6 +8,8 @@ netatmo:
   indoorName:
   # Name of the Netatmo outdoor module
   outdoorName:
+  # Name of the Netatmo rain gauge module
+  rainGaugeName: 
   oauth:
     # DEPRECATED - Netatmo OAuth client id
     # clientId: 
