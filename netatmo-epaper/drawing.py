@@ -33,6 +33,12 @@ class NetatmoOutdoorModel():
     humidity = "0"
 
 
+class NetatmoRainModel():
+    rain = "0.0"
+    sum_rain_1 = "0.0"
+    sum_rain_24 = "0.0"
+
+
 class DisplayDrawer():
 
     """ This class draws the image for the epaper display """
@@ -71,14 +77,14 @@ class DisplayDrawer():
         logger.debug("Drawing indoor data")
         draw.text((10, 100), 'Innen', font=self.font18, fill=0)
         draw.text((10, 120),
-                  '%s °C' % (indoor_model.temp), font=self.font64, fill=0)
+                  '%s °' % (indoor_model.temp), font=self.font64, fill=0)
 
         if indoor_model.trend == "up":
             draw.text(
-                (260, 140), fa.icons['chevron-up'], font=self.fas48, fill=0)
+                (280, 140), fa.icons['chevron-up'], font=self.fas48, fill=0)
         if indoor_model.trend == "down":
             draw.text(
-                (260, 140), fa.icons['chevron-down'], font=self.fas48, fill=0)
+                (280, 140), fa.icons['chevron-down'], font=self.fas48, fill=0)
 
         draw.text((350, 110), 'Min', font=self.font12, fill=0)
         draw.text((350, 120),
@@ -98,29 +104,33 @@ class DisplayDrawer():
         else:
             draw.text((150, 230), fa.icons['frown'], font=self.fa48, fill=0)
 
-        draw.text((260, 210), 'Luftfeuchtigkeit', font=self.font18, fill=0)
-        draw.text((260, 225),
+        draw.text((280, 210), 'Luftfeuchtigkeit', font=self.font18, fill=0)
+        draw.text((280, 225),
                   '%s %%' % (indoor_model.humidity),
                   font=self.font48, fill=0)
 
-    def __draw_outdoor_data(self, draw, outdoor_model, forecast):
+    def __draw_outdoor_data(self, draw, outdoor_model, rain_model, forecast):
+        rain_shift = 0
+        if rain_model:
+            rain_shift = 80
+
         logger.debug("Drawing indoor data")
         draw.text((10, 320), 'Außen', font=self.font18, fill=0)
-        draw.text((10, 340), '%s °C' %
+        draw.text((10, 340), '%s °' %
                   (outdoor_model.temp), font=self.font64, fill=0)
 
         if outdoor_model.trend == "up":
             draw.text(
-                (260, 360), fa.icons['chevron-up'], font=self.fas48, fill=0)
+                (280 - rain_shift, 360), fa.icons['chevron-up'], font=self.fas48, fill=0)
         if outdoor_model.trend == "down":
             draw.text(
-                (260, 360), fa.icons['chevron-down'], font=self.fas48, fill=0)
+                (280 - rain_shift, 360), fa.icons['chevron-down'], font=self.fas48, fill=0)
 
-        draw.text((350, 330), 'Min', font=self.font12, fill=0)
-        draw.text((350, 340), '%s °C' %
+        draw.text((350 - rain_shift, 330), 'Min', font=self.font12, fill=0)
+        draw.text((350 - rain_shift, 340), '%s °C' %
                   (outdoor_model.min_temp), font=self.font24, fill=0)
-        draw.text((350, 380), 'Max', font=self.font12, fill=0)
-        draw.text((350, 390), '%s °C' %
+        draw.text((350 - rain_shift, 380), 'Max', font=self.font12, fill=0)
+        draw.text((350 - rain_shift, 390), '%s °C' %
                   (outdoor_model.max_temp), font=self.font24, fill=0)
 
         draw.text(
@@ -136,9 +146,25 @@ class DisplayDrawer():
         draw.text((90, 480), '%s' %
                   (forecast.sunset), font=self.font24, fill=0)
 
-        draw.text((260, 430), 'Luftfeuchtigkeit', font=self.font18, fill=0)
-        draw.text((260, 445), '%s %%' %
+        draw.text((280 - rain_shift, 430), 'Luftfeuchtigkeit',
+                  font=self.font18, fill=0)
+        draw.text((280 - rain_shift, 445), '%s %%' %
                   (outdoor_model.humidity), font=self.font48, fill=0)
+
+        if rain_model:
+            draw.line((350, 320, 350, 500), fill=0)
+            
+            draw.text((360, 320), 'Regen', font=self.font18, fill=0)
+
+            draw.text((360, 360), 'Letzte Stunde', font=self.font12, fill=0)
+            draw.text((360, 370), '%s mm/h' %
+                      (rain_model.sum_rain_1), font=self.font24, fill=0)
+            draw.text((360, 420), 'Kumulativ', font=self.font12, fill=0)
+            draw.text((360, 430), '%s mm' %
+                      (rain_model.sum_rain_24), font=self.font24, fill=0)
+            draw.text((360, 470), 'Prognostiziert', font=self.font12, fill=0)
+            draw.text((360, 480), '%s mm' %
+                  (rain_model.rain), font=self.font24, fill=0)
 
     def __draw_forecast(self, draw, forecast):
         logger.debug("Drawing forecast")
@@ -162,7 +188,7 @@ class DisplayDrawer():
                     draw.text((30 + hour_idx * 100, 640), "%s °C" %
                               hour.temp,
                               font=self.font12, fill=0)
-            
+
             # Draw Daily Forecast
             draw.text((15 + idx * 100, 690),
                       forecast[idx].day, font=self.font12, fill=0)
@@ -180,6 +206,7 @@ class DisplayDrawer():
                    dt_model=DateTimeModel(),
                    indoor_model=NetatmoIndoorModel(),
                    outdoor_model=NetatmoOutdoorModel(),
+                   rain_model=None,
                    forecast=None):
         """ This acutally draws the image """
 
@@ -203,7 +230,8 @@ class DisplayDrawer():
             draw.line((10, 300, 470, 300), fill=0)
 
             # outdoor data
-            self.__draw_outdoor_data(draw, outdoor_model, forecast[0])
+            self.__draw_outdoor_data(
+                draw, outdoor_model, rain_model, forecast[0])
 
             draw.line((10, 520, 470, 520), fill=0)
 

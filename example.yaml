@@ -8,13 +8,15 @@ netatmo:
   indoorName:
   # Name of the Netatmo outdoor module
   outdoorName:
+  # Name of the Netatmo rain gauge module
+  rainGaugeName: 
   oauth:
-    # Netatmo OAuth client id
-    clientId:
-    # Netatmo OAuth client secret
-    clientSecret:
-    # Netatmo OAuth refresh token
-    refreshToken:
+    # DEPRECATED - Netatmo OAuth client id
+    # clientId: 
+    # DEPRECATED - Netatmo OAuth client secret
+    # clientSecret:
+    # DEPRECATED - Netatmo OAuth refresh token
+    # refreshToken:
 
 
 owm:
