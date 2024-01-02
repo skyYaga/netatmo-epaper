@@ -10,6 +10,7 @@ class Day:
     sunset = ""
     weather_code = ""
     icon_name = ""
+    rain_forecast = ""
 
 
 class Hour():
@@ -72,6 +73,7 @@ class Weather:
             day.icon_name = forecast.weather_icon_name
 
             if day_num == 0:
+                day.rain_forecast = round(forecast.rain['all'], 1)
                 day.hours = get_weather_hourly(observation)
 
             complete_forecast.append(day)

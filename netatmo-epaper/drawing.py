@@ -164,7 +164,7 @@ class DisplayDrawer():
                       (rain_model.sum_rain_24), font=self.font24, fill=0)
             draw.text((360, 470), 'Prognostiziert', font=self.font12, fill=0)
             draw.text((360, 480), '%s mm' %
-                  (rain_model.rain), font=self.font24, fill=0)
+                  (forecast.rain_forecast), font=self.font24, fill=0)
 
     def __draw_forecast(self, draw, forecast):
         logger.debug("Drawing forecast")

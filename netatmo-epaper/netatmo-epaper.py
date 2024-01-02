@@ -102,7 +102,7 @@ def set_rain_model(model, data):
     """ set sensor data for rain gauge into model"""
 
     model.rain = data.get('Rain', '')
-    model.sum_rain_1 = data.get('sum_rain_1', '')
+    model.sum_rain_1 = round(data.get('sum_rain_1', ''), 1)
     model.sum_rain_24 = data.get('sum_rain_24', '')
 
 
