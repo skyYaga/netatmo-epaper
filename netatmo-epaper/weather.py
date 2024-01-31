@@ -73,8 +73,11 @@ class Weather:
             day.icon_name = forecast.weather_icon_name
 
             if day_num == 0:
-                day.rain_forecast = round(forecast.rain['all'], 1)
                 day.hours = get_weather_hourly(observation)
+                if (hasattr(forecast.rain, 'all')):
+                    day.rain_forecast = round(forecast.rain['all'], 1)
+                else:
+                    day.rain_forecast = 0
 
             complete_forecast.append(day)
 
